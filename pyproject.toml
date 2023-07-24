@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "challenge-challenge"
+version = "0.1.0"
+description = ""
+authors = ["Mihail"]
+readme = "README.md"
+packages = [{include = "challenge_challenge"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.100.0"
+alembic = "^1.11.1"
+uvicorn = "^0.23.1"
+psycopg2 = "^2.9.6"
+asyncpg = "^0.28.0"
+envparse = "^0.2.0"
+pytest = "^7.4.0"
+httpx = "^0.24.1"
+pytest-asyncio = "^0.21.1"
+flake8 = "^6.0.0"
+python-multipart = "^0.0.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
