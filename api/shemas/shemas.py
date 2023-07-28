@@ -56,6 +56,17 @@ class Challenge(BaseModel):
         orm_mode = True
 
 
+class SettingChallenge(BaseModel):
+    type: int
+    paid: bool = False
+    cost: float
+    limitations: bool = False
+    count_users: int
+
+    class Config:
+        orm_mode = True
+
+
 class CreateChallenge(BaseModel):
     title: str
     description: str
