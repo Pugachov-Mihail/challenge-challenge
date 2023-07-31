@@ -12,6 +12,19 @@ services:
       - "5433:5432"
     networks:
       - custom
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata6:/data/db
+    networks:
+      - custom
+
+volumes:
+  dbdata6:
+
 networks:
   custom:
     driver: bridge
