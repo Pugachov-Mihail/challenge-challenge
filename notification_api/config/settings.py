@@ -4,6 +4,5 @@ env = Env()
 
 DATABASE_URL = env.str(
     "DATABASE_URL",
-    default="postgresql+asyncpg://postgres:1234@localhost:5433/postgres"
+    default="mongodb+srv://admin:1234@localhost:27017/notification"
 )
-
