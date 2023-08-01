@@ -6,10 +6,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config.config_db import get_db
 from api.models.crud import Crud
-from api.models.model_challenge import Challenge, DayPurpose, DayPurposePoint
 from api.shemas import shemas
 
+from notification_api.router.notification import notification
+from notification_api.config.confi_db import conn
+
 app = FastAPI()
+app.include_router(notification)
 
 
 @app.post("/", response_model=shemas.CreateChallenge)

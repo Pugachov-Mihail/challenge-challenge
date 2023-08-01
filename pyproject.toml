@@ -20,7 +20,7 @@ pytest-asyncio = "^0.21.1"
 flake8 = "^6.0.0"
 python-multipart = "^0.0.6"
 pydantic = "^2.1.1"
-pymongo = {extras = ["srv"], version = "^4.4.1"}
+motor = "^3.2.0"
 
 
 [build-system]
