@@ -9,7 +9,6 @@ from api.models.crud import Crud
 from api.shemas import shemas
 
 from notification_api.router.notification import notification
-from notification_api.config.confi_db import conn
 
 app = FastAPI()
 app.include_router(notification)
@@ -20,9 +19,10 @@ async def create_challenge(challenge: shemas.CreateChallenge,
                            day_purposes: list[shemas.DayPurpose],
                            day_point: list[shemas.DayPurposePoint],
                            setting: shemas.SettingChallenge,
+                           notification: shemas.Notification,
                            db: AsyncSession = Depends(get_db)) -> shemas.CreateChallenge:
     crud = Crud(db)
-    model = await crud.create(challenge, day_purposes, day_point, setting)
+    model = await crud.create(challenge, day_purposes, day_point, setting, notification)
     return model
 
 
@@ -57,8 +57,8 @@ async def get_current_challenge(user_id: uuid.UUID, challenge_id: uuid.UUID, db:
     else:
         return HTTPException(
             status_code=403,
-            detail="Неправильный запрос"
-        )
+            detail="Неправильный запрос")
+
 
 
 if __name__ == '__main__':

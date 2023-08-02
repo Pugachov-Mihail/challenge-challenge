@@ -1,14 +1,14 @@
 import uuid
 
-from datetime import datetime
+from datetime import datetime, time
 from pydantic import BaseModel, validator
 from fastapi.exceptions import HTTPException
 
 
 class DayPurposePoint(BaseModel):
     title: str
-    date_start: datetime
-    date_end: datetime
+    date_start: time
+    date_end: time
     point: bool
 
     @validator("title")
@@ -94,3 +94,11 @@ class CreateChallenge(BaseModel):
                 detail="Длинное название"
             )
         return value
+
+
+class Notification(BaseModel):
+    day_week: int
+    periodicity: int
+    period: int
+    time_start: time
+    time_end: time

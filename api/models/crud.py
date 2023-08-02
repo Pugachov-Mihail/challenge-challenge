@@ -7,6 +7,7 @@ from sqlalchemy import update, select
 from sqlalchemy.orm import selectinload
 
 from api.models.model_challenge import Challenge, DayPurpose, DayPurposePoint, SettingChallenge, CountUser
+from api.models.model_notification import Notification
 from api.shemas import shemas
 
 
@@ -25,10 +26,12 @@ class Crud:
                      challenge: shemas.CreateChallenge,
                      day_purpose: list[shemas.DayPurpose],
                      day_point: list[shemas.DayPurposePoint],
-                     setting: shemas.SettingChallenge):
+                     setting: shemas.SettingChallenge,
+                     notification: shemas.Notification):
         model_challenge = Challenge(**challenge.dict())
         await create_commit(model_challenge, self.db)
         settings = await self.create_settings(setting, model_challenge.id)
+        await self.create_notification(notification, model_challenge.id)
         day_purp = await self.create_day_purpose(day_purpose, model_challenge.id)
 
         if settings.limitations:
@@ -65,8 +68,12 @@ class Crud:
         await self.db.refresh(model)
         return model
 
-    async def create_settings(self, data: list[shemas.SettingChallenge], id_challenge: uuid.UUID):
+    async def create_settings(self, data: shemas.SettingChallenge, id_challenge: uuid.UUID):
         model = SettingChallenge(**data.dict(), challenge_id=id_challenge)
+        return await create_commit(model, self.db)
+
+    async def create_notification(self, data: shemas.Notification, id_challenge: uuid.UUID):
+        model = Notification(**data.dict(), challenge_id=id_challenge)
         return await create_commit(model, self.db)
 
     async def create_count_users(self, id_challenge: uuid.UUID, user_id: uuid.UUID):
@@ -78,6 +85,7 @@ class Crud:
                                day_purpose: shemas.DayPurpose,
                                day_point: shemas.DayPurposePoint,
                                setting: shemas.SettingChallenge,
+                               notification: shemas.Notification,
                                id_challenge: uuid.UUID):
         model = update(Challenge) \
             .where(Challenge.id == id_challenge)\
@@ -90,6 +98,7 @@ class Crud:
         id_purpose = await self.__update_day_purpose(day_purpose, id_challenge)
         await self.__update_day_purpose_point(day_point, id_purpose)
         await self.__update_settings(setting, id_challenge)
+        await self.__update_notification(notification, id_challenge)
 
     async def __update_day_purpose(self, day_purpose: shemas.DayPurpose, id_challenge: uuid.UUID):
         model = update(DayPurpose)\
@@ -117,6 +126,17 @@ class Crud:
                     cost=settings.cost,
                     limitations=settings.limitations,
                     count_user=settings.count_users)
+        await self.db.execute(model)
+        await self.db.commit()
+
+    async  def __update_notification(self, notification: shemas.Notification, id_challenge: uuid.UUID):
+        model = update(Notification)\
+            .where(Notification.challenge_id == id_challenge)\
+            .values(day_week=notification.day_week,
+                    periodicity=notification.periodicity,
+                    period=notification.period,
+                    time_start=notification.time_start,
+                    time_end=notification.time_end)
         await self.db.execute(model)
         await self.db.commit()
 

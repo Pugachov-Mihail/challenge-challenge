@@ -7,5 +7,7 @@ class Notification(BaseModel):
     day_week: int
     periodicity: int
     period: int
-    time_start: datetime.datetime
-    time_end: datetime.datetime
+    time_start: str
+    time_end: str
+
+

@@ -1,4 +1,4 @@
-import uuid
+from datetime import datetime
 
 
 async def notification_entity(item) -> dict:

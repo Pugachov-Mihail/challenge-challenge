@@ -2,7 +2,7 @@ import datetime
 import uuid
 
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, String, DateTime, UUID, ForeignKey, Boolean, Integer, Float
+from sqlalchemy import Column, String, Time, UUID, ForeignKey, Boolean, Integer, Float, DateTime
 from sqlalchemy.dialects import postgresql
 
 from api.models.types import Choise
@@ -16,7 +16,8 @@ class Challenge(Base):
     id = Column(postgresql.UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
     title = Column(String(length=120), nullable=False, comment="Название челленджа")
     description = Column(String(length=1000))
-    user_id = Column(UUID, comment="Пользователь который создал челлендж")  # когда модуль будет готов нужно добавить nullable=False)
+    user_id = Column(UUID,
+                     comment="Пользователь который создал челлендж")  # когда модуль будет готов нужно добавить nullable=False)
     date_create = Column(DateTime(timezone=True), default=datetime.datetime.now())
     date_update = Column(DateTime(timezone=True))
     date_start = Column(DateTime(timezone=True), nullable=False)
@@ -28,6 +29,7 @@ class Challenge(Base):
     setting_challenge = relationship("SettingChallenge", back_populates="challenge", cascade="delete, all")
     count_user = relationship("CountUser", back_populates="challenge", cascade="delete, all")
     day_point = relationship("DayPurposePoint", back_populates="challenge", cascade="delete, all")
+    notification = relationship("Notification", back_populates="challenge")
 
 
 class DayPurpose(Base):
@@ -50,12 +52,12 @@ class DayPurposePoint(Base):
 
     id = Column(postgresql.UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
     title = Column(String(length=120), comment="Название контрольной точки")
-    date_start = Column(DateTime(timezone=True), nullable=False)
-    date_end = Column(DateTime(timezone=True), nullable=False)
+    date_start = Column(Time(timezone=True), nullable=False)
+    date_end = Column(Time(timezone=True), nullable=False)
     status = Column(Boolean, default=True, comment="Удаление контрольной точки")
     point = Column(Boolean, default=True, comment="Подтверждение выполнения контрольной точки")
-    date_update = Column(DateTime(timezone=True))
-    date_create = Column(DateTime(timezone=True), default=datetime.datetime.now())
+    date_update = Column(Time(timezone=True))
+    date_create = Column(Time(timezone=True), default=datetime.datetime.now())
 
     day_purpose_id = Column(UUID, ForeignKey("day_purpose.id"))
     challenge_id = Column(UUID, ForeignKey("challenge.id"))
@@ -70,7 +72,7 @@ class SettingChallenge(Base):
     type = Column(Choise({
         0: "Индивидуальный",
         1: "Групповой"
-    }), default=1)
+    }), default=0)
     paid = Column(Boolean, default=False)
     cost = Column(Float)
     limitations = Column(Boolean, default=False)
