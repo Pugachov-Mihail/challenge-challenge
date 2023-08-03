@@ -5,7 +5,9 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, String, Time, UUID, ForeignKey, Boolean, Integer, Float, DateTime
 from sqlalchemy.dialects import postgresql
 
+
 from api.models.types import Choise
+
 
 Base = declarative_base()
 
@@ -29,7 +31,7 @@ class Challenge(Base):
     setting_challenge = relationship("SettingChallenge", back_populates="challenge", cascade="delete, all")
     count_user = relationship("CountUser", back_populates="challenge", cascade="delete, all")
     day_point = relationship("DayPurposePoint", back_populates="challenge", cascade="delete, all")
-    notification = relationship("Notification", back_populates="challenge")
+    notification = relationship("Notification", back_populates="challenge", cascade="delete, all")
 
 
 class DayPurpose(Base):
@@ -56,8 +58,8 @@ class DayPurposePoint(Base):
     date_end = Column(Time(timezone=True), nullable=False)
     status = Column(Boolean, default=True, comment="Удаление контрольной точки")
     point = Column(Boolean, default=True, comment="Подтверждение выполнения контрольной точки")
-    date_update = Column(Time(timezone=True))
-    date_create = Column(Time(timezone=True), default=datetime.datetime.now())
+    date_update = Column(DateTime(timezone=True))
+    date_create = Column(DateTime(timezone=True), default=datetime.datetime.now())
 
     day_purpose_id = Column(UUID, ForeignKey("day_purpose.id"))
     challenge_id = Column(UUID, ForeignKey("challenge.id"))
@@ -94,3 +96,20 @@ class CountUser(Base):
 
     challenge_id = Column(UUID, ForeignKey("challenge.id"))
     challenge = relationship("Challenge", back_populates="count_user")
+
+
+class Notification(Base):
+    __tablename__ = "notification"
+
+    id = Column(postgresql.UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
+    day_week = Column(Integer, nullable=False)
+    periodicity = Column(Choise({
+        0: "Раз в час",
+        1: "Раз в день"
+    }))
+    period = Column(Integer, default=0) # 0 - всегда, 1-будни, 2-выходные
+    time_start = Column(Time)
+    time_end = Column(Time)
+
+    challenge_id = Column(UUID, ForeignKey("challenge.id"))
+    challenge = relationship("Challenge", back_populates="notification")

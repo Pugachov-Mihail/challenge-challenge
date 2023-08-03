@@ -1,13 +1,14 @@
-import datetime
+async def notification_entity(item) -> dict:
+    return {
+        "id": str(item['_id']),
+        "day_week": item['day_week'],
+        "periodicity": item['periodicity'],
+        "period": item['period'],
+        "time_start": item['time_start'],
+        "time_end": item['time_end']
+    }
 
-from pydantic import BaseModel
 
-
-class Notification(BaseModel):
-    day_week: int
-    periodicity: int
-    period: int
-    time_start: str
-    time_end: str
-
+async def notifications_entity(entity) -> list:
+    return [await notification_entity(item) for item in await entity]
 

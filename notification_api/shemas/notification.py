@@ -1,16 +1,24 @@
-from datetime import datetime
+import uuid
+from datetime import time
+
+from pydantic import BaseModel
 
 
-async def notification_entity(item) -> dict:
-    return {
-        "id": str(item['_id']),
-        "day_week": item['day_week'],
-        "periodicity": item['periodicity'],
-        "period": item['period'],
-        "time_start": item['time_start'],
-        "time_end": item['time_end']
-    }
+class Challenge(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+
+    class Config:
+        orm_mode = True
 
 
-async def notifications_entity(entity) -> list:
-    return [await notification_entity(item) for item in await entity]
+class Notification(BaseModel):
+    day_week: int
+    periodicity: int
+    period: int
+    time_start: time
+    time_end: time
+    challenge: Challenge
+
+    class Config:
+        orm_mode = True

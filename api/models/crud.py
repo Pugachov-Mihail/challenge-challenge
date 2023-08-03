@@ -6,8 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update, select
 from sqlalchemy.orm import selectinload
 
-from api.models.model_challenge import Challenge, DayPurpose, DayPurposePoint, SettingChallenge, CountUser
-from api.models.model_notification import Notification
+from api.models.model_challenge import Challenge, DayPurpose, DayPurposePoint, SettingChallenge, CountUser, Notification
 from api.shemas import shemas
 
 
@@ -162,3 +161,20 @@ class Crud:
         )
 
         return model.scalar()
+
+
+class NotificationUser:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def get_notification_current_day_week(self):
+        day_week = datetime.datetime.now().weekday()
+        model = await self.db.execute(
+            select(Notification)
+            .where(Notification.day_week == day_week)
+            .options(
+                selectinload(Notification.challenge)
+            )
+        )
+        return model.scalars()
+

@@ -15,7 +15,7 @@ class DayPurposePoint(BaseModel):
     def validate_title(cls, value):
         if len(value) > 120:
             raise HTTPException(
-                status_code=400,
+                status_code=403,
                 detail="Длинное название"
             )
         return value
@@ -28,12 +28,11 @@ class DayPurpose(BaseModel):
     title: str
     point: bool
 
-
     @validator("title")
     def validate_title(cls, value):
         if len(value) > 120:
             raise HTTPException(
-                status_code=400,
+                status_code=403,
                 detail="Длинное название"
             )
         return value
@@ -66,6 +65,26 @@ class SettingChallenge(BaseModel):
     limitations: bool = False
     count_users: int
 
+    @validator("type")
+    def validator_type(cls, value):
+        if value == 0 or value == 1:
+            return value
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="Неверный тип челленджа"
+            )
+
+    @validator("count_users")
+    def validator_count_user(cls, value):
+        if value > 0:
+            return value
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="Нельзя вводить отрицательные числа"
+            )
+
     class Config:
         orm_mode = True
 
@@ -81,7 +100,7 @@ class CreateChallenge(BaseModel):
     def validate_description(cls, value):
         if len(value) > 1000:
             raise HTTPException(
-                status_code=400,
+                status_code=403,
                 detail="Длинное описание"
             )
         return value
@@ -90,7 +109,7 @@ class CreateChallenge(BaseModel):
     def validate_title(cls, value):
         if len(value) > 120:
             raise HTTPException(
-                status_code=400,
+                status_code=403,
                 detail="Длинное название"
             )
         return value
@@ -102,3 +121,33 @@ class Notification(BaseModel):
     period: int
     time_start: time
     time_end: time
+
+    @validator("day_week")
+    def validator_day_week(cls, value):
+        if 0 < value < 6:
+            return value
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="Неизвестный день недели"
+            )
+
+    @validator("periodicity")
+    def validate_periodicity(cls, value):
+        if value == 0 or value == 1:
+            return value
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="Неверная частота напоминаний"
+            )
+
+    @validator("period")
+    def validate_period(cls, value):
+        if 0 < value > 2:
+            return value
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="Неверный период"
+            )

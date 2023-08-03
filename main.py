@@ -11,7 +11,7 @@ from api.shemas import shemas
 from notification_api.router.notification import notification
 
 app = FastAPI()
-app.include_router(notification)
+app.include_router(notification, prefix="/notification")
 
 
 @app.post("/", response_model=shemas.CreateChallenge)
