@@ -10,5 +10,5 @@ async def notification_entity(item) -> dict:
 
 
 async def notifications_entity(entity) -> list:
-    return [await notification_entity(item) for item in await entity]
+    return [await notification_entity(item) for item in await entity.to_list(length=20)]
 

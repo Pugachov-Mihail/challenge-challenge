@@ -77,7 +77,7 @@ class SettingChallenge(BaseModel):
 
     @validator("count_users")
     def validator_count_user(cls, value):
-        if value > 0:
+        if value >= 0:
             return value
         else:
             raise HTTPException(
@@ -144,7 +144,7 @@ class Notification(BaseModel):
 
     @validator("period")
     def validate_period(cls, value):
-        if 0 < value > 2:
+        if 0 <= value < 3:
             return value
         else:
             raise HTTPException(

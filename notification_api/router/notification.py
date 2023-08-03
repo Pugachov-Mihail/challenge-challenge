@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from celery import Celery
 
 from api.config.config_db import get_db
 from api.models.crud import NotificationUser
@@ -9,18 +10,19 @@ from notification_api.config import confi_db
 
 notification = APIRouter(tags=["Notification"])
 
+task_celery = Celery("notification", broker="redis://localhost:6379/0")
+
 
 @notification.get("/create")
-async def create(db: AsyncSession = Depends(get_db)):
+async def create_data_in_mongodb(db: AsyncSession = Depends(get_db)):
     notif = NotificationUser(db)
     res = await notif.get_notification_current_day_week()
-    for i in res:
-        await confi_db.db.values.insert_one(ad(i))
-    res_mongo = await confi_db.db.find({})
-    return notifications_entity(res_mongo)
+    await confi_db.db.values.insert_many([_data_for_mongo(i) for i in res])
+    list_data = confi_db.db.values.find({})
+    return await notifications_entity(list_data)
 
 
-def ad(item: Notification):
+def _data_for_mongo(item: Notification):
     return {
         "day_week": item.day_week,
         "periodicity": item.periodicity,
