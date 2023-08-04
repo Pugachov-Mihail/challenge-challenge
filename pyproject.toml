@@ -14,15 +14,15 @@ uvicorn = "^0.23.1"
 psycopg2 = "^2.9.6"
 asyncpg = "^0.28.0"
 envparse = "^0.2.0"
-pytest = "^7.4.0"
-httpx = "^0.24.1"
 pytest-asyncio = "^0.21.1"
-flake8 = "^6.0.0"
 python-multipart = "^0.0.6"
 pydantic = "^2.1.1"
-motor = "^3.2.0"
-celery = "^5.3.1"
 
+
+[tool.poetry.group.test.dependencies]
+httpx = "^0.24.1"
+flake8 = "^6.1.0"
+pytest = "^7.4.0"
 
 [build-system]
 requires = ["poetry-core"]

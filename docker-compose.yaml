@@ -13,32 +13,6 @@ services:
     networks:
       - custom
 
-  mongodb:
-    image: mongo:latest
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 1234
-    ports:
-      - "27017:27017"
-    volumes:
-      - dbdata6:/data/db
-    networks:
-      - custom
-
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"
-    environment:
-      - REDIS_PASSWORD=1234
-      - REDIS_PORT=6379
-      - REDIS_DATABASES=16
-
-volumes:
-  dbdata6:
-
 networks:
   custom:
     driver: bridge

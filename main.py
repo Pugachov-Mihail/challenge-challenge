@@ -1,17 +1,15 @@
 import uuid
 
 import uvicorn
-from fastapi import FastAPI, APIRouter, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config.config_db import get_db
 from api.models.crud import Crud
 from api.shemas import shemas
 
-from notification_api.router.notification import notification
 
 app = FastAPI()
-app.include_router(notification, prefix="/notification")
 
 
 @app.post("/", response_model=shemas.CreateChallenge)
@@ -58,7 +56,6 @@ async def get_current_challenge(user_id: uuid.UUID, challenge_id: uuid.UUID, db:
         return HTTPException(
             status_code=403,
             detail="Неправильный запрос")
-
 
 
 if __name__ == '__main__':
