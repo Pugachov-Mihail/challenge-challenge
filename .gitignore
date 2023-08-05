@@ -1,4 +1,3 @@
 .venv
 .idea
 migrations/versions/*
-notification_api/migration/versions/*

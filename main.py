@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.config.config_db import get_db
 from api.models.crud import Crud
 from api.shemas import shemas
-
+from other_api.router import notification
 
 app = FastAPI()
 
@@ -57,6 +57,8 @@ async def get_current_challenge(user_id: uuid.UUID, challenge_id: uuid.UUID, db:
             status_code=403,
             detail="Неправильный запрос")
 
+app.include_router(notification.notification,
+                   tags=["Notification"])
 
 if __name__ == '__main__':
     uvicorn.run(app, host="127.0.0.1")
